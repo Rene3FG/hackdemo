@@ -29,6 +29,8 @@
   .mbtn.p:hover{border-color:var(--green);color:var(--green);box-shadow:0 0 20px rgba(0,255,136,.12);}
   .mbtn.v:hover{border-color:var(--red);color:var(--red);box-shadow:0 0 20px rgba(255,32,32,.12);}
   .mico{font-size:1.4rem;display:block;margin-bottom:.4rem;}
+  #pass-field{display:none;}
+  .err{font-family:var(--mono);font-size:.7rem;color:var(--red);text-align:center;margin-top:-.5rem;display:none;}
 
   /* PRESENTER */
   #presenter{display:none;min-height:100vh;padding:2rem;flex-direction:column;gap:1.5rem;}
@@ -112,7 +114,7 @@
       <input class="inp" id="sname" type="text" placeholder="ej. Alumno1">
     </div>
     <div>
-      <div class="lbl">Entrar como</div>
+      <div id="pass-field" style="display:none"><div class="lbl">Contraseña de moderador</div><input class="inp" id="spass" type="password" placeholder="••••••••"></div><div class="err" id="pass-err" style="display:none;font-family:var(--mono);font-size:.7rem;color:var(--red);text-align:center">⚠ Contraseña incorrecta</div><div class="lbl">Entrar como</div>
       <div class="row2">
         <button class="mbtn p" onclick="enter('presenter')"><span class="mico">🖥️</span>PRESENTADOR</button>
         <button class="mbtn v" onclick="enter('victim')"><span class="mico">📱</span>COLABORADOR</button>
@@ -198,12 +200,35 @@ const db = firebase.database();
 let mode='', session='', myName='', myKey='';
 let phraseTimer=null, phraseCycle=0;
 const PHRASES=['⚠ ACCESO TOTAL ⚠','💀 DATOS EXPUESTOS','🔓 CONTRASEÑAS','📸 CÁMARA ACTIVA','🎙️ MICRÓFONO ON'];
+const MOD_PASS = 'Kevinpug777';
+
+// Mostrar campo de contraseña al hacer clic en PRESENTADOR
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelector('.mbtn.p').addEventListener('click', (e) => {
+    e.stopPropagation();
+    document.getElementById('pass-field').style.display = 'block';
+    setTimeout(() => document.getElementById('spass').focus(), 50);
+  });
+});
 
 function enter(m) {
   session = document.getElementById('sid').value.trim().toUpperCase();
   myName  = document.getElementById('sname').value.trim();
   if (!session) { alert('Ingresa el código de sesión'); return; }
   if (!myName)  { alert('Ingresa tu nombre'); return; }
+
+  if (m === 'presenter') {
+    document.getElementById('pass-field').style.display = 'block';
+    const pass = document.getElementById('spass').value;
+    if (pass !== MOD_PASS) {
+      document.getElementById('pass-err').style.display = 'block';
+      document.getElementById('spass').value = '';
+      document.getElementById('spass').focus();
+      return;
+    }
+    document.getElementById('pass-err').style.display = 'none';
+  }
+
   mode = m;
   document.getElementById('setup').style.display = 'none';
   m === 'presenter' ? startPresenter() : startVictim();
