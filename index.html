@@ -114,9 +114,9 @@
       <input class="inp" id="sname" type="text" placeholder="ej. Alumno1">
     </div>
     <div>
-      <div id="pass-field" style="display:none"><div class="lbl">Contraseña de moderador</div><input class="inp" id="spass" type="password" placeholder="••••••••"></div><div class="err" id="pass-err" style="display:none;font-family:var(--mono);font-size:.7rem;color:var(--red);text-align:center">⚠ Contraseña incorrecta</div><div class="lbl">Entrar como</div>
+      <div id="pass-field" style="display:none"><div class="lbl">Contraseña de moderador</div><input class="inp" id="spass" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')enter('presenter')"><button class="mbtn p" style="margin-top:.5rem;width:100%" onclick="enter('presenter')">CONFIRMAR →</button></div><div class="err" id="pass-err" style="display:none;font-family:var(--mono);font-size:.7rem;color:var(--red);text-align:center">⚠ Contraseña incorrecta</div><div class="lbl">Entrar como</div>
       <div class="row2">
-        <button class="mbtn p" onclick="enter('presenter')"><span class="mico">🖥️</span>PRESENTADOR</button>
+        <button class="mbtn p" onclick="showPassField()"><span class="mico">🖥️</span>PRESENTADOR</button>
         <button class="mbtn v" onclick="enter('victim')"><span class="mico">📱</span>COLABORADOR</button>
       </div>
     </div>
@@ -202,14 +202,11 @@ let phraseTimer=null, phraseCycle=0;
 const PHRASES=['⚠ ACCESO TOTAL ⚠','💀 DATOS EXPUESTOS','🔓 CONTRASEÑAS','📸 CÁMARA ACTIVA','🎙️ MICRÓFONO ON'];
 const MOD_PASS = 'Kevinpug777';
 
-// Mostrar campo de contraseña al hacer clic en PRESENTADOR
-document.addEventListener('DOMContentLoaded', () => {
-  document.querySelector('.mbtn.p').addEventListener('click', (e) => {
-    e.stopPropagation();
-    document.getElementById('pass-field').style.display = 'block';
-    setTimeout(() => document.getElementById('spass').focus(), 50);
-  });
-});
+// Mostrar campo de contraseña
+function showPassField() {
+  document.getElementById('pass-field').style.display = 'block';
+  setTimeout(() => document.getElementById('spass').focus(), 50);
+}
 
 function enter(m) {
   session = document.getElementById('sid').value.trim().toUpperCase();
